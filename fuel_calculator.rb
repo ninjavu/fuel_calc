@@ -38,6 +38,9 @@ class FuelCalculator
   attr_reader :trip_plan, :mass
 
   def validate_args
+    # [TODO] Waiting for confirmation about should I handle such case as [[:launch, :earth], [:launch, :moon]]
+    # two consequent launches sound irrational, but will implement after clarification.
+     
     trip_plan.each do |(action, planet)|
       raise ArgumentError, "Wrong action: #{action}" unless ACTIONS.include?(action)
 
