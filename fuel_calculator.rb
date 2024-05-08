@@ -29,7 +29,7 @@ class FuelCalculator
 
   def calculate
     trip_plan.reverse.inject(0) do |result, (action, planet)|
-      result + calc_fuel(mass + result, GRAVITY[planet], action)
+      result + calculate_fuel(mass + result, GRAVITY[planet], action)
     end
   end
 
@@ -38,9 +38,6 @@ class FuelCalculator
   attr_reader :trip_plan, :mass
 
   def validate_args
-    # [TODO] Waiting for confirmation about should I handle such case as [[:launch, :earth], [:launch, :moon]]
-    # two consequent launches sound irrational, but will implement after clarification.
-     
     trip_plan.each do |(action, planet)|
       raise ArgumentError, "Wrong action: #{action}" unless ACTIONS.include?(action)
 
@@ -48,11 +45,11 @@ class FuelCalculator
     end
   end
 
-  def calc_fuel(mass, gravity, action)
+  def calculate_fuel(mass, gravity, action)
     fuel_required = (mass * gravity * COEFFICIENTS[action][:b] - COEFFICIENTS[action][:offset]).to_i
 
     return 0 if fuel_required.negative?
 
-    fuel_required + calc_fuel(fuel_required, gravity, action)
+    fuel_required + calculate_fuel(fuel_required, gravity, action)
   end
 end
